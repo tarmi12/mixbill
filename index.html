@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>เอกสารรวมบิล (พิมพ์ 80x80 สีดำล้วน)</title>
+    <style>
+        /* ===== ตั้งค่าหน้ากระดาษสำหรับพิมพ์ 80x80 ===== */
+        @page {
+            size: 80mm 80mm;
+            margin: 4mm 3mm;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== สไตล์สำหรับหน้าจอ (มองเห็นง่าย) ===== */
+        body {
+            font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
+            background: #eef2f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            padding: 32px 30px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .doc-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 3px solid #eef3f9;
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+        }
+        .doc-header .icon {
+            background: #1f2a3a;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .doc-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #141e2b;
+        }
+        .doc-header h1 small {
+            font-weight: 400;
+            font-size: 14px;
+            color: #5e7086;
+            display: block;
+        }
+
+        .doc-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            background: #f6f9fe;
+            padding: 14px 16px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e6edf6;
+        }
+        .doc-field {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .doc-field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #4f637b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .doc-field input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #d0dcec;
+            padding: 6px 4px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #141e2b;
+            outline: none;
+            font-family: inherit;
+            width: 100%;
+        }
+        .doc-field input:focus {
+            border-bottom-color: #1f2a3a;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        .input-row .input-group {
+            flex: 2;
+            position: relative;
+        }
+        .input-row .input-group .currency-symbol {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
+            color: #5e7086;
+            font-size: 16px;
+            pointer-events: none;
+        }
+        .input-row input[type="number"] {
+            width: 100%;
+            padding: 14px 14px 14px 34px;
+            font-size: 18px;
+            font-weight: 600;
+            border: 2px solid #dce4ef;
+            border-radius: 16px;
+            background: #fafcff;
+            outline: none;
+            font-family: inherit;
+        }
+        .input-row input[type="number"]:focus {
+            border-color: #1f2a3a;
+            box-shadow: 0 0 0 4px rgba(31, 42, 58, 0.06);
+        }
+        .input-row button {
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            background: #1f2a3a;
+            color: #fff;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            box-shadow: 0 6px 14px rgba(31, 42, 58, 0.15);
+            transition: 0.15s;
+        }
+        .input-row button:hover {
+            background: #111b29;
+        }
+
+        .bill-list-container {
+            background: #f6f9fe;
+            border-radius: 16px;
+            padding: 6px 4px;
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 18px;
+            border: 1px solid #e6edf6;
+        }
+        .bill-list-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        .bill-list-container::-webkit-scrollbar-thumb {
+            background: #cbd8e8;
+            border-radius: 10px;
+        }
+
+        .bill-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            margin: 4px 4px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #eef3f9;
+        }
+        .bill-item .index {
+            font-weight: 700;
+            color: #1f2a3a;
+            font-size: 15px;
+            min-width: 70px;
+        }
+        .bill-item .amount {
+            font-weight: 700;
+            font-size: 16px;
+            color: #141e2b;
+        }
+        .bill-item .amount .baht-text {
+            font-weight: 400;
+            color: #5e7086;
+            font-size: 14px;
+        }
+        .bill-item .remove-btn {
+            background: none;
+            border: none;
+            color: #b0c2d8;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 6px;
+            line-height: 1;
+            transition: 0.15s;
+        }
+        .bill-item .remove-btn:hover {
+            color: #cf5e5e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 28px 8px;
+            color: #8d9fb5;
+            font-size: 15px;
+        }
+        .empty-state .emoji {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .total-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #eaf0f8;
+            padding: 14px 18px;
+            border-radius: 16px;
+            border: 2px solid #dce4ef;
+            margin-bottom: 16px;
+        }
+        .total-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2a3a4f;
+        }
+        .total-amount {
+            font-size: 20px;
+            font-weight: 800;
+            color: #141e2b;
+            text-align: right;
+        }
+
+        .print-btn-wrapper {
+            margin-top: 4px;
+        }
+        .btn-print {
+            width: 100%;
+            padding: 18px 10px;
+            background: #1f2a3a;
+            color: #fff;
+            border: none;
+            border-radius: 18px;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 8px 20px rgba(31, 42, 58, 0.2);
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+        .btn-print:hover {
+            background: #111b29;
+        }
+
+        /* ============================================ */
+        /* ===== โหมดพิมพ์: สีดำล้วน ฟอนต์หนา ชัด ===== */
+        @media print {
+            /* ซ่อนทุกปุ่มและฟอร์ม */
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block;
+            }
+
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 5mm 4mm !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                background: white !important;
+            }
+
+            /* ทุกอย่างเป็นสีดำล้วน และฟอนต์หนา */
+            * {
+                font-family: 'Arial', 'Helvetica', 'Sarabun', sans-serif !important;
+                color: #000000 !important;
+                background: transparent !important;
+                border-color: #000000 !important;
+            }
+
+            /* บังคับพื้นหลังขาว */
+            .container, .doc-info, .bill-list-container, .bill-item, .total-section {
+                background: white !important;
+            }
+
+            /* ขอบและเส้นเป็นสีดำ */
+            .doc-header {
+                border-bottom: 2px solid #000 !important;
+            }
+            .doc-info {
+                border: 1px solid #000 !important;
+            }
+            .bill-item {
+                border-bottom: 1px dashed #000 !important;
+                border-top: none !important;
+                border-left: none !important;
+                border-right: none !important;
+            }
+            .total-section {
+                border: 2px solid #000 !important;
+            }
+
+            /* ฟอนต์ใหญ่ขึ้นและหนามาก */
+            .doc-header h1 {
+                font-size: 18px !important;
+                font-weight: 900 !important;
+            }
+            .doc-header .icon {
+                font-size: 16px !important;
+                width: 28px !important;
+                height: 28px !important;
+                background: #000 !important;
+                color: #fff !important;
+            }
+            .doc-field input {
+                font-size: 14px !important;
+                font-weight: 900 !important;
+                border-bottom: 1px solid #000 !important;
+                background: white !important;
+            }
+            .doc-field label {
+                font-size: 10px !important;
+                font-weight: 900 !important;
+            }
+
+            .bill-item .index {
+                font-size: 15px !important;
+                font-weight: 900 !important;
+                min-width: 60px !important;
+            }
+            .bill-item .amount {
+                font-size: 16px !important;
+                font-weight: 900 !important;
+            }
+            .bill-item .amount .baht-text {
+                font-size: 14px !important;
+                font-weight: 700 !important;
+            }
+
+            .total-label {
+                font-size: 16px !important;
+                font-weight: 900 !important;
+            }
+            .total-amount {
+                font-size: 20px !important;
+                font-weight: 900 !important;
+            }
+
+            .empty-state {
+                font-size: 14px !important;
+                font-weight: 700 !important;
+                color: #000 !important;
+            }
+            .empty-state .emoji {
+                font-size: 22px !important;
+            }
+
+            /* ตรวจสอบให้แน่ใจว่าไม่มีสีเทาเหลือ */
+            .total-section, .doc-info, .bill-list-container {
+                background: white !important;
+            }
+            .bill-item {
+                background: white !important;
+            }
+            .doc-field input {
+                color: #000 !important;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .doc-info {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .container {
+                padding: 20px 16px;
+            }
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.4;
+            height: 28px;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="doc-header">
+        <div class="icon" aria-hidden="true">📄</div>
+        <h1>
+            เอกสารรวมบิล
+            <small>กรอกข้อมูลและเพิ่มรายการ</small>
+        </h1>
+    </div>
+
+    <!-- ข้อมูลเอกสาร -->
+    <div class="doc-info">
+        <div class="doc-field">
+            <label for="docNumber">📌 เลขที่</label>
+            <input type="text" id="docNumber" placeholder="เลขที่เอกสาร" value="INV-2026-001" />
+        </div>
+        <div class="doc-field">
+            <label for="docDate">📅 วันที่</label>
+            <input type="date" id="docDate" />
+        </div>
+        <div class="doc-field">
+            <label for="docTime">⏰ เวลา</label>
+            <input type="time" id="docTime" />
+        </div>
+    </div>
+
+    <!-- เพิ่มรายการ (ซ่อนตอนพิมพ์) -->
+    <div class="input-row no-print">
+        <div class="input-group">
+            <span class="currency-symbol" aria-hidden="true">฿</span>
+            <input
+            type="number"
+            id="amountInput"
+            placeholder="จำนวนเงิน"
+            step="0.01"
+            min="0"
+            autofocus
+            aria-label="ใส่จำนวนเงิน"
+            />
+        </div>
+        <button id="addBtn" aria-label="เพิ่มรายการ">
+            <span aria-hidden="true">➕</span> เพิ่ม
+        </button>
+    </div>
+
+    <!-- รายการบิล -->
+    <div class="bill-list-container" id="billList" role="list" aria-label="รายการบิล">
+        <div class="empty-state" id="emptyState">
+            <span class="emoji" aria-hidden="true">🧾</span>
+            ยังไม่มีรายการ<br />เริ่มเพิ่มบิลเลย!
+        </div>
+    </div>
+
+    <!-- สรุป (มีคำว่า "เท่าไร") -->
+    <div class="total-section">
+        <div class="total-label">🧮 รวมเป็นเงิน <span style="font-weight:900;">เท่าไร</span></div>
+        <div class="total-amount" id="totalDisplay">รวม 0 บิล = 0.00 บาท</div>
+    </div>
+
+    <!-- ปุ่ม พิมพ์ -->
+    <div class="print-btn-wrapper no-print">
+        <button class="btn-print" id="printBtn">
+            <span>🖨️</span> รวมเงินและพิมพ์
+        </button>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        const amountInput = document.getElementById('amountInput');
+        const addBtn = document.getElementById('addBtn');
+        const billList = document.getElementById('billList');
+        const emptyState = document.getElementById('emptyState');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const printBtn = document.getElementById('printBtn');
+
+        let bills = [];
+
+        function formatBaht(value) {
+            return value.toFixed(2);
+        }
+
+        function render() {
+            while (billList.firstChild) {
+                billList.removeChild(billList.firstChild);
+            }
+
+            if (bills.length === 0) {
+                billList.appendChild(emptyState);
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                bills.forEach((amount, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'bill-item';
+                    item.setAttribute('role', 'listitem');
+
+                    const indexSpan = document.createElement('span');
+                    indexSpan.className = 'index';
+                    indexSpan.textContent = `บิลที่ ${index + 1}`;
+                    item.appendChild(indexSpan);
+
+                    const amountSpan = document.createElement('span');
+                    amountSpan.className = 'amount';
+                    amountSpan.innerHTML =
+                        `ยอดเงิน ${formatBaht(amount)} <span class="baht-text">บาท</span>`;
+                    item.appendChild(amountSpan);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn no-print';
+                    removeBtn.setAttribute('aria-label', `ลบ ${indexSpan.textContent}`);
+                    removeBtn.innerHTML = '✕';
+                    removeBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        removeItem(index);
+                    });
+                    item.appendChild(removeBtn);
+
+                    billList.appendChild(item);
+                });
+            }
+
+            const total = bills.reduce((sum, val) => sum + val, 0);
+            const count = bills.length;
+            totalDisplay.innerHTML = `รวม ${count} บิล = ${formatBaht(total)} <span style="font-weight:400;">บาท</span>`;
+
+            amountInput.focus();
+        }
+
+        function addItem() {
+            let raw = amountInput.value.trim();
+            if (raw === '') {
+                alert('กรุณาใส่จำนวนเงิน');
+                amountInput.focus();
+                return;
+            }
+
+            let normalized = raw.replace(/,/g, '.');
+            let number = parseFloat(normalized);
+
+            if (isNaN(number) || number < 0) {
+                alert('กรุณาใส่จำนวนเงินที่ถูกต้อง (ตัวเลขเท่านั้น)');
+                amountInput.value = '';
+                amountInput.focus();
+                return;
+            }
+
+            number = Math.round(number * 100) / 100;
+            bills.push(number);
+            render();
+            amountInput.value = '';
+            amountInput.focus();
+        }
+
+        function removeItem(index) {
+            if (index >= 0 && index < bills.length) {
+                bills.splice(index, 1);
+                render();
+            }
+        }
+
+        function setDefaultDateTime() {
+            const now = new Date();
+            const dateInput = document.getElementById('docDate');
+            const timeInput = document.getElementById('docTime');
+
+            if (dateInput) {
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                dateInput.value = `${year}-${month}-${day}`;
+            }
+
+            if (timeInput) {
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                timeInput.value = `${hours}:${minutes}`;
+            }
+        }
+        setDefaultDateTime();
+
+        addBtn.addEventListener('click', addItem);
+        amountInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addItem();
+            }
+        });
+
+        printBtn.addEventListener('click', function() {
+            if (bills.length === 0) {
+                if (!confirm('ยังไม่มีรายการบิล ต้องการพิมพ์เอกสารเปล่าหรือไม่?')) {
+                    return;
+                }
+            }
+            window.print();
+        });
+
+        amountInput.addEventListener('focus', function() {
+            this.select();
+        });
+
+        render();
+    })();
+</script>
+
+</body>
+</html>
