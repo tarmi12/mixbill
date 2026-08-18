@@ -17,7 +17,7 @@
             padding: 0;
         }
 
-        /* ===== สไตล์สำหรับหน้าจอ (มองเห็นง่าย) ===== */
+        /* ===== สไตล์สำหรับหน้าจอ ===== */
         body {
             font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;
             background: #eef2f7;
@@ -250,6 +250,58 @@
             text-align: right;
         }
 
+        /* ===== ปุ่ม Actions (แถวปุ่มด้านล่าง) ===== */
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .actions button {
+            flex: 1;
+            padding: 12px 10px;
+            border: none;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.15s;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-clear-last {
+            background: rgba(207, 94, 94, 0.08);
+            color: #b15252;
+            border: 1px solid rgba(207, 94, 94, 0.12);
+        }
+        .btn-clear-last:hover {
+            background: rgba(207, 94, 94, 0.16);
+        }
+
+        .btn-clear-all {
+            background: rgba(207, 60, 60, 0.10);
+            color: #b33a3a;
+            border: 2px solid rgba(207, 60, 60, 0.20);
+        }
+        .btn-clear-all:hover {
+            background: rgba(207, 60, 60, 0.20);
+            transform: scale(1.02);
+        }
+
+        .btn-reset {
+            background: rgba(31, 42, 58, 0.06);
+            color: #2a3a4f;
+            border: 1px solid rgba(31, 42, 58, 0.08);
+        }
+        .btn-reset:hover {
+            background: rgba(31, 42, 58, 0.12);
+        }
+
         .print-btn-wrapper {
             margin-top: 4px;
         }
@@ -279,7 +331,6 @@
         /* ============================================ */
         /* ===== โหมดพิมพ์: สีดำล้วน ฟอนต์หนา ชัด ===== */
         @media print {
-            /* ซ่อนทุกปุ่มและฟอร์ม */
             .no-print {
                 display: none !important;
             }
@@ -300,7 +351,6 @@
                 background: white !important;
             }
 
-            /* ทุกอย่างเป็นสีดำล้วน และฟอนต์หนา */
             * {
                 font-family: 'Arial', 'Helvetica', 'Sarabun', sans-serif !important;
                 color: #000000 !important;
@@ -308,12 +358,10 @@
                 border-color: #000000 !important;
             }
 
-            /* บังคับพื้นหลังขาว */
             .container, .doc-info, .bill-list-container, .bill-item, .total-section {
                 background: white !important;
             }
 
-            /* ขอบและเส้นเป็นสีดำ */
             .doc-header {
                 border-bottom: 2px solid #000 !important;
             }
@@ -330,7 +378,6 @@
                 border: 2px solid #000 !important;
             }
 
-            /* ฟอนต์ใหญ่ขึ้นและหนามาก */
             .doc-header h1 {
                 font-size: 18px !important;
                 font-weight: 900 !important;
@@ -385,7 +432,6 @@
                 font-size: 22px !important;
             }
 
-            /* ตรวจสอบให้แน่ใจว่าไม่มีสีเทาเหลือ */
             .total-section, .doc-info, .bill-list-container {
                 background: white !important;
             }
@@ -404,6 +450,12 @@
             }
             .container {
                 padding: 20px 16px;
+            }
+            .actions {
+                flex-direction: column;
+            }
+            .actions button {
+                width: 100%;
             }
         }
 
@@ -479,6 +531,19 @@
         <div class="total-amount" id="totalDisplay">รวม 0 บิล = 0.00 บาท</div>
     </div>
 
+    <!-- ===== ปุ่ม Actions (เพิ่มปุ่ม เคลียร์รายการ) ===== -->
+    <div class="actions no-print">
+        <button class="btn-clear-last" id="clearLastBtn" aria-label="ลบรายการสุดท้าย">
+            <span aria-hidden="true">✕</span> ลบรายการล่าสุด
+        </button>
+        <button class="btn-clear-all" id="clearAllBtn" aria-label="เคลียร์รายการทั้งหมด">
+            <span aria-hidden="true">🧹</span> เคลียร์รายการทั้งหมด
+        </button>
+        <button class="btn-reset" id="resetBtn" aria-label="ล้างข้อมูลเอกสาร">
+            <span aria-hidden="true">⟳</span> ล้างข้อมูล
+        </button>
+    </div>
+
     <!-- ปุ่ม พิมพ์ -->
     <div class="print-btn-wrapper no-print">
         <button class="btn-print" id="printBtn">
@@ -498,6 +563,9 @@
         const emptyState = document.getElementById('emptyState');
         const totalDisplay = document.getElementById('totalDisplay');
         const printBtn = document.getElementById('printBtn');
+        const clearLastBtn = document.getElementById('clearLastBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const resetBtn = document.getElementById('resetBtn');
 
         let bills = [];
 
@@ -584,6 +652,28 @@
             }
         }
 
+        // ===== ฟังก์ชันเคลียร์รายการทั้งหมด (ใหม่) =====
+        function clearAllBills() {
+            if (bills.length === 0) {
+                alert('ไม่มีรายการบิลที่จะเคลียร์');
+                return;
+            }
+            if (confirm('คุณต้องการเคลียร์รายการบิลทั้งหมดใช่หรือไม่?')) {
+                bills = [];
+                render();
+            }
+        }
+
+        // ===== ฟังก์ชันล้างข้อมูลเอกสาร (เลขที่, วันที่, เวลา) =====
+        function resetDocumentInfo() {
+            if (!confirm('คุณต้องการล้างข้อมูลเอกสาร (เลขที่, วันที่, เวลา) ใช่หรือไม่?')) {
+                return;
+            }
+            document.getElementById('docNumber').value = '';
+            document.getElementById('docDate').value = '';
+            document.getElementById('docTime').value = '';
+        }
+
         function setDefaultDateTime() {
             const now = new Date();
             const dateInput = document.getElementById('docDate');
@@ -604,6 +694,7 @@
         }
         setDefaultDateTime();
 
+        // ---- Event Listeners ----
         addBtn.addEventListener('click', addItem);
         amountInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -612,6 +703,23 @@
             }
         });
 
+        // ลบรายการล่าสุด
+        clearLastBtn.addEventListener('click', function() {
+            if (bills.length === 0) {
+                alert('ไม่มีรายการที่จะลบ');
+                return;
+            }
+            bills.pop();
+            render();
+        });
+
+        // ===== เคลียร์รายการทั้งหมด (ปุ่มใหม่) =====
+        clearAllBtn.addEventListener('click', clearAllBills);
+
+        // ล้างข้อมูลเอกสาร (เลขที่, วันที่, เวลา)
+        resetBtn.addEventListener('click', resetDocumentInfo);
+
+        // พิมพ์
         printBtn.addEventListener('click', function() {
             if (bills.length === 0) {
                 if (!confirm('ยังไม่มีรายการบิล ต้องการพิมพ์เอกสารเปล่าหรือไม่?')) {
