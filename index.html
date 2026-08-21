@@ -8,7 +8,7 @@
         /* ===== ตั้งค่าหน้ากระดาษสำหรับพิมพ์ 80x80 ===== */
         @page {
             size: 80mm 80mm;
-            margin: 4mm 3mm;
+            margin: 3mm 3mm;
         }
 
         * {
@@ -33,7 +33,7 @@
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             padding: 32px 30px;
-            max-width: 500px;
+            max-width: 560px;
             width: 100%;
         }
 
@@ -111,9 +111,11 @@
             display: flex;
             gap: 10px;
             margin-bottom: 18px;
+            flex-wrap: wrap;
         }
         .input-row .input-group {
             flex: 2;
+            min-width: 140px;
             position: relative;
         }
         .input-row .input-group .currency-symbol {
@@ -126,6 +128,7 @@
             font-size: 16px;
             pointer-events: none;
         }
+        .input-row input[type="text"],
         .input-row input[type="number"] {
             width: 100%;
             padding: 14px 14px 14px 34px;
@@ -137,12 +140,26 @@
             outline: none;
             font-family: inherit;
         }
-        .input-row input[type="number"]:focus {
+        .input-row input[type="text"] {
+            padding: 14px 14px;
+        }
+        .input-row input[type="number"]:focus,
+        .input-row input[type="text"]:focus {
             border-color: #1f2a3a;
             box-shadow: 0 0 0 4px rgba(31, 42, 58, 0.06);
         }
+
+        .input-row .remark-group {
+            flex: 1.5;
+            min-width: 100px;
+        }
+        .input-row .remark-group input {
+            padding: 14px 14px;
+            font-size: 16px;
+        }
+
         .input-row button {
-            padding: 14px 24px;
+            padding: 14px 20px;
             font-size: 16px;
             font-weight: 700;
             border: none;
@@ -163,7 +180,7 @@
             background: #f6f9fe;
             border-radius: 16px;
             padding: 6px 4px;
-            max-height: 220px;
+            max-height: 240px;
             overflow-y: auto;
             margin-bottom: 18px;
             border: 1px solid #e6edf6;
@@ -180,27 +197,42 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
+            padding: 10px 14px;
             margin: 4px 4px;
             border-radius: 12px;
             background: #ffffff;
             border: 1px solid #eef3f9;
+            gap: 6px;
+            flex-wrap: wrap;
         }
         .bill-item .index {
             font-weight: 700;
             color: #1f2a3a;
-            font-size: 15px;
-            min-width: 70px;
+            font-size: 14px;
+            min-width: 62px;
         }
         .bill-item .amount {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             color: #141e2b;
+            min-width: 80px;
         }
-        .bill-item .amount .baht-text {
+        .bill-item .amount.positive {
+            color: #1a7a3a;
+        }
+        .bill-item .amount.negative {
+            color: #b33a3a;
+        }
+        .bill-item .remark {
             font-weight: 400;
+            font-size: 13px;
             color: #5e7086;
-            font-size: 14px;
+            flex: 1;
+            min-width: 60px;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .bill-item .remove-btn {
             background: none;
@@ -211,6 +243,7 @@
             padding: 0 6px;
             line-height: 1;
             transition: 0.15s;
+            flex-shrink: 0;
         }
         .bill-item .remove-btn:hover {
             color: #cf5e5e;
@@ -237,6 +270,8 @@
             border-radius: 16px;
             border: 2px solid #dce4ef;
             margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 4px;
         }
         .total-label {
             font-size: 16px;
@@ -249,8 +284,10 @@
             color: #141e2b;
             text-align: right;
         }
+        .total-amount .negative {
+            color: #b33a3a;
+        }
 
-        /* ===== ปุ่ม Actions (แถวปุ่มด้านล่าง) ===== */
         .actions {
             display: flex;
             gap: 8px;
@@ -328,9 +365,17 @@
             background: #111b29;
         }
 
-        /* ============================================ */
-        /* ===== โหมดพิมพ์: สีดำล้วน ฟอนต์หนา ชัด ===== */
+        /* ============================================================ */
+        /* ===== โหมดพิมพ์: สีดำล้วน ฟอนต์ใหญ่ หนา คมชัด ===== */
         @media print {
+            /* บังคับให้รักษาสีในการพิมพ์ */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* ซ่อนปุ่มและฟอร์ม */
             .no-print {
                 display: none !important;
             }
@@ -339,18 +384,19 @@
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
-                display: block;
+                display: block !important;
             }
 
             .container {
                 max-width: 100% !important;
                 width: 100% !important;
-                padding: 5mm 4mm !important;
+                padding: 4mm 3mm !important;
                 border-radius: 0 !important;
                 box-shadow: none !important;
                 background: white !important;
             }
 
+            /* ===== ทุกอย่างเป็นสีดำล้วน บนพื้นขาว ===== */
             * {
                 font-family: 'Arial', 'Helvetica', 'Sarabun', sans-serif !important;
                 color: #000000 !important;
@@ -358,28 +404,37 @@
                 border-color: #000000 !important;
             }
 
-            .container, .doc-info, .bill-list-container, .bill-item, .total-section {
+            .container,
+            .doc-info,
+            .bill-list-container,
+            .bill-item,
+            .total-section {
                 background: white !important;
             }
 
+            /* ===== เส้นขอบคมชัด ===== */
             .doc-header {
                 border-bottom: 2px solid #000 !important;
             }
             .doc-info {
                 border: 1px solid #000 !important;
+                background: white !important;
             }
             .bill-item {
                 border-bottom: 1px dashed #000 !important;
                 border-top: none !important;
                 border-left: none !important;
                 border-right: none !important;
+                background: white !important;
             }
             .total-section {
                 border: 2px solid #000 !important;
+                background: white !important;
             }
 
+            /* ===== ฟอนต์ใหญ่และหนาพิเศษ ===== */
             .doc-header h1 {
-                font-size: 18px !important;
+                font-size: 20px !important;
                 font-weight: 900 !important;
             }
             .doc-header .icon {
@@ -389,50 +444,69 @@
                 background: #000 !important;
                 color: #fff !important;
             }
+
             .doc-field input {
-                font-size: 14px !important;
+                font-size: 15px !important;
                 font-weight: 900 !important;
-                border-bottom: 1px solid #000 !important;
+                border-bottom: 2px solid #000 !important;
                 background: white !important;
+                color: #000 !important;
             }
             .doc-field label {
                 font-size: 10px !important;
                 font-weight: 900 !important;
+                color: #000 !important;
             }
 
             .bill-item .index {
-                font-size: 15px !important;
-                font-weight: 900 !important;
-                min-width: 60px !important;
-            }
-            .bill-item .amount {
                 font-size: 16px !important;
                 font-weight: 900 !important;
+                min-width: 60px !important;
+                color: #000 !important;
+            }
+            .bill-item .amount {
+                font-size: 17px !important;
+                font-weight: 900 !important;
+                color: #000 !important;
             }
             .bill-item .amount .baht-text {
                 font-size: 14px !important;
                 font-weight: 700 !important;
+                color: #000 !important;
             }
-
-            .total-label {
-                font-size: 16px !important;
-                font-weight: 900 !important;
-            }
-            .total-amount {
-                font-size: 20px !important;
-                font-weight: 900 !important;
-            }
-
-            .empty-state {
+            .bill-item .remark {
                 font-size: 14px !important;
                 font-weight: 700 !important;
                 color: #000 !important;
             }
-            .empty-state .emoji {
+
+            .total-label {
+                font-size: 18px !important;
+                font-weight: 900 !important;
+                color: #000 !important;
+            }
+            .total-amount {
                 font-size: 22px !important;
+                font-weight: 900 !important;
+                color: #000 !important;
+            }
+            .total-amount .negative {
+                color: #000 !important;
             }
 
-            .total-section, .doc-info, .bill-list-container {
+            .empty-state {
+                font-size: 15px !important;
+                font-weight: 700 !important;
+                color: #000 !important;
+            }
+            .empty-state .emoji {
+                font-size: 24px !important;
+            }
+
+            /* ลบสีพื้นหลังทั้งหมด */
+            .doc-info,
+            .bill-list-container,
+            .total-section {
                 background: white !important;
             }
             .bill-item {
@@ -441,9 +515,14 @@
             .doc-field input {
                 color: #000 !important;
             }
+
+            /* บังคับให้อยู่ภายในหน้า */
+            .container {
+                page-break-after: avoid;
+            }
         }
 
-        @media (max-width: 450px) {
+        @media (max-width: 480px) {
             .doc-info {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
@@ -451,11 +530,30 @@
             .container {
                 padding: 20px 16px;
             }
+            .input-row {
+                flex-direction: column;
+            }
+            .input-row .remark-group {
+                flex: 1;
+            }
+            .input-row button {
+                width: 100%;
+                justify-content: center;
+            }
             .actions {
                 flex-direction: column;
             }
             .actions button {
                 width: 100%;
+            }
+            .bill-item {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .bill-item .remark {
+                width: 100%;
+                white-space: normal;
+                font-size: 12px;
             }
         }
 
@@ -478,7 +576,7 @@
         <div class="icon" aria-hidden="true">📄</div>
         <h1>
             เอกสารรวมบิล
-            <small>กรอกข้อมูลและเพิ่มรายการ</small>
+            <small>เพิ่ม / หัก พร้อมหมายเหตุ</small>
         </h1>
     </div>
 
@@ -486,7 +584,7 @@
     <div class="doc-info">
         <div class="doc-field">
             <label for="docNumber">📌 เลขที่</label>
-            <input type="text" id="docNumber" placeholder="เลขที่เอกสาร" value="INV-2026-001" />
+            <input type="text" id="docNumber" placeholder="เลขที่เอกสาร" value="" />
         </div>
         <div class="doc-field">
             <label for="docDate">📅 วันที่</label>
@@ -498,18 +596,25 @@
         </div>
     </div>
 
-    <!-- เพิ่มรายการ (ซ่อนตอนพิมพ์) -->
+    <!-- ===== แถวเพิ่มรายการ (จำนวน + หมายเหตุ) ===== -->
     <div class="input-row no-print">
         <div class="input-group">
             <span class="currency-symbol" aria-hidden="true">฿</span>
             <input
             type="number"
             id="amountInput"
-            placeholder="จำนวนเงิน"
+            placeholder="+ / -"
             step="0.01"
-            min="0"
             autofocus
-            aria-label="ใส่จำนวนเงิน"
+            aria-label="ใส่จำนวนเงิน (บวกหรือลบ)"
+            />
+        </div>
+        <div class="input-group remark-group">
+            <input
+            type="text"
+            id="remarkInput"
+            placeholder="หมายเหตุ ()"
+            aria-label="หมายเหตุรายการ"
             />
         </div>
         <button id="addBtn" aria-label="เพิ่มรายการ">
@@ -525,13 +630,13 @@
         </div>
     </div>
 
-    <!-- สรุป (มีคำว่า "เท่าไร") -->
+    <!-- สรุป -->
     <div class="total-section">
         <div class="total-label">🧮 รวมเป็นเงิน <span style="font-weight:900;">เท่าไร</span></div>
-        <div class="total-amount" id="totalDisplay">รวม 0 บิล = 0.00 บาท</div>
+        <div class="total-amount" id="totalDisplay">รวม 0 รายการ = 0.00 บาท</div>
     </div>
 
-    <!-- ===== ปุ่ม Actions (เพิ่มปุ่ม เคลียร์รายการ) ===== -->
+    <!-- ===== ปุ่ม Actions ===== -->
     <div class="actions no-print">
         <button class="btn-clear-last" id="clearLastBtn" aria-label="ลบรายการสุดท้าย">
             <span aria-hidden="true">✕</span> ลบรายการล่าสุด
@@ -558,6 +663,7 @@
         'use strict';
 
         const amountInput = document.getElementById('amountInput');
+        const remarkInput = document.getElementById('remarkInput');
         const addBtn = document.getElementById('addBtn');
         const billList = document.getElementById('billList');
         const emptyState = document.getElementById('emptyState');
@@ -567,6 +673,7 @@
         const clearAllBtn = document.getElementById('clearAllBtn');
         const resetBtn = document.getElementById('resetBtn');
 
+        // ===== เริ่มต้นด้วยรายการว่าง =====
         let bills = [];
 
         function formatBaht(value) {
@@ -583,21 +690,41 @@
                 emptyState.style.display = 'block';
             } else {
                 emptyState.style.display = 'none';
-                bills.forEach((amount, index) => {
-                    const item = document.createElement('div');
-                    item.className = 'bill-item';
-                    item.setAttribute('role', 'listitem');
+                bills.forEach((item, index) => {
+                    const amount = item.amount;
+                    const remark = item.remark || '';
+
+                    const div = document.createElement('div');
+                    div.className = 'bill-item';
+                    div.setAttribute('role', 'listitem');
 
                     const indexSpan = document.createElement('span');
                     indexSpan.className = 'index';
                     indexSpan.textContent = `บิลที่ ${index + 1}`;
-                    item.appendChild(indexSpan);
+                    div.appendChild(indexSpan);
 
                     const amountSpan = document.createElement('span');
                     amountSpan.className = 'amount';
-                    amountSpan.innerHTML =
-                        `ยอดเงิน ${formatBaht(amount)} <span class="baht-text">บาท</span>`;
-                    item.appendChild(amountSpan);
+                    if (amount >= 0) {
+                        amountSpan.classList.add('positive');
+                        amountSpan.innerHTML = `+ ${formatBaht(amount)} <span class="baht-text">บาท</span>`;
+                    } else {
+                        amountSpan.classList.add('negative');
+                        amountSpan.innerHTML = `- ${formatBaht(Math.abs(amount))} <span class="baht-text">บาท</span>`;
+                    }
+                    div.appendChild(amountSpan);
+
+                    if (remark) {
+                        const remarkSpan = document.createElement('span');
+                        remarkSpan.className = 'remark';
+                        remarkSpan.textContent = remark;
+                        div.appendChild(remarkSpan);
+                    } else {
+                        const remarkSpan = document.createElement('span');
+                        remarkSpan.className = 'remark';
+                        remarkSpan.textContent = '';
+                        div.appendChild(remarkSpan);
+                    }
 
                     const removeBtn = document.createElement('button');
                     removeBtn.className = 'remove-btn no-print';
@@ -607,15 +734,21 @@
                         e.stopPropagation();
                         removeItem(index);
                     });
-                    item.appendChild(removeBtn);
+                    div.appendChild(removeBtn);
 
-                    billList.appendChild(item);
+                    billList.appendChild(div);
                 });
             }
 
-            const total = bills.reduce((sum, val) => sum + val, 0);
+            const total = bills.reduce((sum, item) => sum + item.amount, 0);
             const count = bills.length;
-            totalDisplay.innerHTML = `รวม ${count} บิล = ${formatBaht(total)} <span style="font-weight:400;">บาท</span>`;
+            let totalText = `รวม ${count} รายการ = `;
+            if (total >= 0) {
+                totalText += `${formatBaht(total)} บาท`;
+            } else {
+                totalText += `- ${formatBaht(Math.abs(total))} บาท`;
+            }
+            totalDisplay.innerHTML = totalText;
 
             amountInput.focus();
         }
@@ -623,7 +756,7 @@
         function addItem() {
             let raw = amountInput.value.trim();
             if (raw === '') {
-                alert('กรุณาใส่จำนวนเงิน');
+                alert('กรุณาใส่จำนวนเงิน (เช่น 100 หรือ -50)');
                 amountInput.focus();
                 return;
             }
@@ -631,17 +764,21 @@
             let normalized = raw.replace(/,/g, '.');
             let number = parseFloat(normalized);
 
-            if (isNaN(number) || number < 0) {
-                alert('กรุณาใส่จำนวนเงินที่ถูกต้อง (ตัวเลขเท่านั้น)');
+            if (isNaN(number)) {
+                alert('กรุณาใส่จำนวนเงินที่ถูกต้อง (เช่น 100 หรือ -50)');
                 amountInput.value = '';
                 amountInput.focus();
                 return;
             }
 
             number = Math.round(number * 100) / 100;
-            bills.push(number);
+            const remark = remarkInput.value.trim();
+
+            bills.push({ amount: number, remark: remark });
             render();
+
             amountInput.value = '';
+            remarkInput.value = '';
             amountInput.focus();
         }
 
@@ -652,7 +789,6 @@
             }
         }
 
-        // ===== ฟังก์ชันเคลียร์รายการทั้งหมด (ใหม่) =====
         function clearAllBills() {
             if (bills.length === 0) {
                 alert('ไม่มีรายการบิลที่จะเคลียร์');
@@ -664,7 +800,6 @@
             }
         }
 
-        // ===== ฟังก์ชันล้างข้อมูลเอกสาร (เลขที่, วันที่, เวลา) =====
         function resetDocumentInfo() {
             if (!confirm('คุณต้องการล้างข้อมูลเอกสาร (เลขที่, วันที่, เวลา) ใช่หรือไม่?')) {
                 return;
@@ -696,6 +831,7 @@
 
         // ---- Event Listeners ----
         addBtn.addEventListener('click', addItem);
+
         amountInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -703,7 +839,13 @@
             }
         });
 
-        // ลบรายการล่าสุด
+        remarkInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addItem();
+            }
+        });
+
         clearLastBtn.addEventListener('click', function() {
             if (bills.length === 0) {
                 alert('ไม่มีรายการที่จะลบ');
@@ -713,13 +855,9 @@
             render();
         });
 
-        // ===== เคลียร์รายการทั้งหมด (ปุ่มใหม่) =====
         clearAllBtn.addEventListener('click', clearAllBills);
-
-        // ล้างข้อมูลเอกสาร (เลขที่, วันที่, เวลา)
         resetBtn.addEventListener('click', resetDocumentInfo);
 
-        // พิมพ์
         printBtn.addEventListener('click', function() {
             if (bills.length === 0) {
                 if (!confirm('ยังไม่มีรายการบิล ต้องการพิมพ์เอกสารเปล่าหรือไม่?')) {
@@ -733,6 +871,7 @@
             this.select();
         });
 
+        // ===== เริ่มต้น render (แสดง empty state) =====
         render();
     })();
 </script>
