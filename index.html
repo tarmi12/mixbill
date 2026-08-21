@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>เอกสารรวมบิล (พิมพ์ 80x80 สีดำล้วน)</title>
+    <title>เอกสารรวมบิล</title>
     <style>
         /* ===== ตั้งค่าหน้ากระดาษสำหรับพิมพ์ 80x80 ===== */
         @page {
@@ -416,13 +416,34 @@
             .doc-header {
                 border-bottom: 2px solid #000 !important;
             }
-            /* ไม่มีกรอบสำหรับ doc-info */
+            /* ===== เอกสาร: เลขที่/วันที่/เวลา ไม่มีกรอบ และตัวเล็ก ===== */
             .doc-info {
                 border: none !important;
-                padding: 4px 6px !important;
+                padding: 2px 4px !important;
                 background: white !important;
-                gap: 6px !important;
+                gap: 4px !important;
+                margin-bottom: 8px !important;
             }
+            .doc-field {
+                gap: 0px !important;
+            }
+            .doc-field label {
+                font-size: 7px !important;
+                font-weight: 700 !important;
+                color: #000 !important;
+                letter-spacing: 0px !important;
+                text-transform: none !important;
+            }
+            .doc-field input {
+                font-size: 10px !important;
+                font-weight: 700 !important;
+                border-bottom: 1px solid #000 !important;
+                padding: 1px 2px !important;
+                background: white !important;
+                color: #000 !important;
+                min-height: auto !important;
+            }
+
             .bill-item {
                 border-bottom: 1px dashed #000 !important;
                 border-top: none !important;
@@ -446,25 +467,6 @@
                 height: 28px !important;
                 background: #000 !important;
                 color: #fff !important;
-            }
-
-            /* ===== ปรับขนาดฟอนต์ของเลขที่/วันที่/เวลา ให้เล็กลง ===== */
-            .doc-field input {
-                font-size: 12px !important;
-                font-weight: 700 !important;
-                border-bottom: 1px solid #000 !important;
-                background: white !important;
-                color: #000 !important;
-                padding: 2px 2px !important;
-            }
-            .doc-field label {
-                font-size: 8px !important;
-                font-weight: 700 !important;
-                color: #000 !important;
-                letter-spacing: 0.2px !important;
-            }
-            .doc-field {
-                gap: 0px !important;
             }
 
             /* ===== รายการบิลและยอดรวม ===== */
@@ -573,7 +575,7 @@
         <div class="icon" aria-hidden="true">📄</div>
         <h1>
             เอกสารรวมบิล
-            <small>*****</small>
+            <small>เพิ่ม / หัก พร้อมหมายเหตุ</small>
         </h1>
     </div>
 
@@ -629,7 +631,7 @@
 
     <!-- สรุป -->
     <div class="total-section">
-        <div class="total-label">🧮 รวมเป็นเงิน <span style="font-weight:900;">เท่าไร</span></div>
+        <div class="total-label">🧮 รวมเป็นเงิน <span style="font-weight:900;"></span></div>
         <div class="total-amount" id="totalDisplay">รวม 0 รายการ = 0.00 บาท</div>
     </div>
 
@@ -670,7 +672,6 @@
         const clearAllBtn = document.getElementById('clearAllBtn');
         const resetBtn = document.getElementById('resetBtn');
 
-        // ===== เริ่มต้นด้วยรายการว่าง =====
         let bills = [];
 
         function formatBaht(value) {
@@ -868,7 +869,6 @@
             this.select();
         });
 
-        // ===== เริ่มต้น render (แสดง empty state) =====
         render();
     })();
 </script>
