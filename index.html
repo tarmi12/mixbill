@@ -412,13 +412,16 @@
                 background: white !important;
             }
 
-            /* ===== เส้นขอบคมชัด ===== */
+            /* ===== เส้นขอบ (เฉพาะส่วนที่จำเป็น) ===== */
             .doc-header {
                 border-bottom: 2px solid #000 !important;
             }
+            /* ไม่มีกรอบสำหรับ doc-info */
             .doc-info {
-                border: 1px solid #000 !important;
+                border: none !important;
+                padding: 4px 6px !important;
                 background: white !important;
+                gap: 6px !important;
             }
             .bill-item {
                 border-bottom: 1px dashed #000 !important;
@@ -432,7 +435,7 @@
                 background: white !important;
             }
 
-            /* ===== ฟอนต์ใหญ่และหนาพิเศษ ===== */
+            /* ===== ฟอนต์หัวข้อหลักใหญ่ ===== */
             .doc-header h1 {
                 font-size: 20px !important;
                 font-weight: 900 !important;
@@ -445,19 +448,26 @@
                 color: #fff !important;
             }
 
+            /* ===== ปรับขนาดฟอนต์ของเลขที่/วันที่/เวลา ให้เล็กลง ===== */
             .doc-field input {
-                font-size: 15px !important;
-                font-weight: 900 !important;
-                border-bottom: 2px solid #000 !important;
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                border-bottom: 1px solid #000 !important;
                 background: white !important;
                 color: #000 !important;
+                padding: 2px 2px !important;
             }
             .doc-field label {
-                font-size: 10px !important;
-                font-weight: 900 !important;
+                font-size: 8px !important;
+                font-weight: 700 !important;
                 color: #000 !important;
+                letter-spacing: 0.2px !important;
+            }
+            .doc-field {
+                gap: 0px !important;
             }
 
+            /* ===== รายการบิลและยอดรวม ===== */
             .bill-item .index {
                 font-size: 16px !important;
                 font-weight: 900 !important;
@@ -501,19 +511,6 @@
             }
             .empty-state .emoji {
                 font-size: 24px !important;
-            }
-
-            /* ลบสีพื้นหลังทั้งหมด */
-            .doc-info,
-            .bill-list-container,
-            .total-section {
-                background: white !important;
-            }
-            .bill-item {
-                background: white !important;
-            }
-            .doc-field input {
-                color: #000 !important;
             }
 
             /* บังคับให้อยู่ภายในหน้า */
@@ -576,7 +573,7 @@
         <div class="icon" aria-hidden="true">📄</div>
         <h1>
             เอกสารรวมบิล
-            <small>เพิ่ม / หัก พร้อมหมายเหตุ</small>
+            <small>*****</small>
         </h1>
     </div>
 
